@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+           body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('5330832.jpg');
+            height: 100px;
+            
+            background-color: #56a4e5;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        .wl {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            position: relative;
+            text-align: center;
+        }
+
+        .user-info {
+            margin-bottom: 20px;
+        }
+
+        .logout-icon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            cursor: pointer;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        #changePasswordFormContainer {
+            display: none;
+        }
+        .switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+.welcome{
+  font-size: 30px;
+  margin-top: 100px;
+}
+.logout{
+    margin-right: 20px;
+}
+.vno{
+    font-size: 20px;
+}
+.vname{
+    font-size: 20px;
+}
+.color{
+    background-color: rgb(182, 198, 241);
+    height: 500px;
+    border-radius: 60px;
+    margin-top: 100px;
+    width: 100%;
+}
+.switch{
+   margin-top: -130px;
+}
+.active{
+    padding-top: 40px;
+}
+
+
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+
+</head>
+
+<!-- Update profile.html -->
+<!-- ... (existing head content) ... -->
+
+<body>
+    <div class="container">
+        <div class="logout-icon" onclick="logout()">
+            <p class="logout">Logout</p>
+        </div>
+        <div class="content">
+            
+            <div class="user-info">
+               
+                <p class="welcome">Welcome, <%= user.name %>!</p>
+            </div>
+        <div>
+            <p class="vno">vehicleNumber,<%= user.autoName %>!</p>
+            <p class="vname">vehicleName,<%= user.vehicleNumber %>!</p>
+        </div>
+        <div class="color">
+            <p class="active">ACTIVE</p>
+             <div class="swipe-container" style="justify-content: center; display: flex; align-items: center; margin-top: 50%;">
+                <label class="switch">
+                    
+                    <input type="checkbox" id="swipeCheckbox" checked onchange="handleSwitchChange()">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                      Location
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="handleLocationSelection('Pambady Centre')">Pambady Centre</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="handleLocationSelection('Thiruvilwamala Centre')">Thiruvilwamala Centre</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="handleLocationSelection('Thiruvilwamala Bus stand')">Thiruvilwamala Bus stand</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="handleLocationSelection('SM')">SM</a></li>
+                        <!-- You can add more locations with onclick events -->
+                        <li><hr class="dropdown-divider"></li>
+                      </ul>
+                  </div>
+            
+        </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function logout() {
+            window.location.href = '/logout';
+        }
+    
+        function handleSwitchChange() {
+            const swipeCheckbox = document.getElementById('swipeCheckbox');
+            const switchActive = swipeCheckbox.checked;
+            setSwitchActive(switchActive);
+            sendSwitchStatus(switchActive);
+        }
+
+        function sendSwitchStatus(checked) {
+            axios.patch('https://test-0ohy.onrender.com/api/cab/<%= user.phone %>', { active: checked })
+                .then(response => {
+                    console.log('Cab active status updated successfully:', response.data);
+                })
+                .catch(error => {
+                    console.error('Error updating cab active status:', error);
+                });
+        }
+
+        // State management for the switch
+        let switchActive = true; // Set the initial state as needed
+
+        function setSwitchActive(checked) {
+            switchActive = checked;
+        }
+
+        function handleLocationSelection(location) {
+            console.log('Selected location:', location);
+            // Replace 'userPhone' with the actual phone number or identifier for the user
+            const userPhone = '<%= user.phone %>'; // This should be replaced with your user's phone numberr
+            updateLocation(userPhone, location);
+        }
+
+        function updateLocation(userPhone, location) {
+            // Make an Axios request to update the location in the database
+            axios.patch(`https://test-0ohy.onrender.com/api/cab/${userPhone}/location`, { location: location })
+                .then(response => {
+                    console.log('Location updated successfully:', response.data);
+                    // You can add further actions here upon successful update
+                })
+                .catch(error => {
+                    console.error('Error updating location:', error);
+                });
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html>
+
+
+</html>

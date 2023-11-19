@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="title">User Profile</div>
+        <div class="content">
+            <div class="user-info">
+                <div class="account-icon" onclick="goToProfile()">
+                    <p>Account</p>
+                </div>
+                <p>Welcome, <%= user.name %>!</p>
+                <p>Email: <%= user.email %></p>
+            </div>
+
+            <button onclick="logout()">Logout</button>
+
+            <h2>Change Password</h2>
+            <form id="changePasswordForm" onsubmit="changePassword(event)">
+                <label for="currentPassword">Current Password:</label>
+                <input type="password" name="currentPassword" required><br>
+
+                <label for="newPassword">New Password:</label>
+                <input type="password" name="newPassword" required><br>
+
+                <button type="submit">Change Password</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function logout() {
+            window.location.href = '/logout';
+        }
+
+        function changePassword(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const currentPassword = formData.get('currentPassword');
+            const newPassword = formData.get('newPassword');
+
+            axios.post('/changepassword', { currentPassword, newPassword })
+                .then(response => {
+                    alert(response.data);
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Error changing password');
+                });
+        }
+
+        function goToProfile() {
+            // Redirect to the profile section
+            // You may need to implement this based on your design
+            // For example: window.location.href = '/profile';
+        }
+    </script>
+</body>
+</html>
